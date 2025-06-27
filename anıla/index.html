@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Bombayı Biliyor Musun?</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; margin: 0 auto; background: #e6f7ff; }
+    #score { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 24px; font-family: sans-serif; }
+  </style>
+</head>
+<body>
+<div id="score">Skor: 0</div>
+<canvas id="gameCanvas" width="480" height="640"></canvas>
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let anilImg = new Image();
+anilImg.src = "assets/anil.png";
+let sound = new Audio("assets/anil_havlama.mp3");
+
+let score = 0;
+let gravity = 0.6;
+let jump = -10;
+let player = { x: 50, y: 200, width: 50, height: 50, velocity: 0 };
+
+document.addEventListener("keydown", () => jumpPlayer());
+canvas.addEventListener("mousedown", () => jumpPlayer());
+
+function jumpPlayer() {
+  player.velocity = jump;
+  sound.currentTime = 0;
+  sound.play();
+}
+
+function update() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  player.velocity += gravity;
+  player.y += player.velocity;
+
+  if (player.y + player.height > canvas.height || player.y < 0) {
+    alert("HAV! Bombayı bilmiyordun...\nSkor: " + score);
+    player.y = 200;
+    player.velocity = 0;
+    score = 0;
+    document.getElementById("score").innerText = "Skor: 0";
+  }
+
+  ctx.drawImage(anilImg, player.x, player.y, player.width, player.height);
+
+  requestAnimationFrame(update);
+}
+
+update();
+</script>
+</body>
+</html>
